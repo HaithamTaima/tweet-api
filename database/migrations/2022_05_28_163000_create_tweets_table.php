@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+class CreateTweetsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -15,6 +15,9 @@ return new class extends Migration
     {
         Schema::create('tweets', function (Blueprint $table) {
             $table->id();
+            $table->text('content');
+            $table->bigInteger('user_id')->unsigned();
+            $table->dateTime('deleted_at')->nullable();
             $table->timestamps();
         });
     }
@@ -28,4 +31,4 @@ return new class extends Migration
     {
         Schema::dropIfExists('tweets');
     }
-};
+}

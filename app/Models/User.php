@@ -23,6 +23,21 @@ class User extends Authenticatable
         'password',
     ];
 
+
+
+
+    public function tweets()
+    {
+        return $this->hasMany(Tweet::class, 'user_id', 'id');
+    }
+
+    public function likes()
+    {
+        return $this->bleongsToMany(Tweet::class, 'likes', 'user_id', 'tweet_id');
+
+    }
+
+
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -42,3 +57,6 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 }
+
+
+

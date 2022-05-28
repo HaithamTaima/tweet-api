@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Apis;
 use App\Http\Controllers\Controller;
 use App\Models\Tweet;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class TweetController extends Controller
 {
@@ -15,7 +16,16 @@ class TweetController extends Controller
      */
     public function index()
     {
-        //
+        $tweets = Tweet::all();
+        $tweets = $tweets->map(function($tweet){
+            Return [
+                'Tweet' => $tweet->content,
+                'date' => $tweet->created_at
+            ];
+        });
+
+        return response()->json(['tweet'=>$tweets]);
+
     }
 
     /**
@@ -36,7 +46,7 @@ class TweetController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
     }
 
     /**
@@ -45,9 +55,12 @@ class TweetController extends Controller
      * @param  \App\Models\Tweet  $tweet
      * @return \Illuminate\Http\Response
      */
-    public function show(Tweet $tweet)
+    public function show($id)
     {
-        //
+        $tweet = Tweet::with('user')
+            ->withCount('user')
+            ->find($id);
+        return response()->json(['tweet'=>$tweet]);
     }
 
     /**
