@@ -57,10 +57,8 @@ class TweetController extends Controller
      */
     public function show($id)
     {
-        $tweet = Tweet::with('user')
-            ->withCount('user')
-            ->find($id);
-        return response()->json(['tweet'=>$tweet]);
+
+
     }
 
     /**
@@ -92,8 +90,23 @@ class TweetController extends Controller
      * @param  \App\Models\Tweet  $tweet
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Tweet $tweet)
+    public function destroy($id)
     {
-        //
+
+        $tweet = Tweet::find($id);
+
+        if (!$tweet) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Tweet not found.'
+            ], 404);
+        }
+
+        $tweet->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Tweet deleted successfully.'
+        ], 200);
     }
 }

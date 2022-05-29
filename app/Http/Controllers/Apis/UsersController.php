@@ -16,20 +16,8 @@ class UsersController extends Controller
 
     public function show($id)
     {
-        $user = User::find($id);
-
-        if (!$user) {
-            return response()->json([
-                'success' => false,
-                'message' => 'User not found.'
-            ], 404);
-        }
-
-        return response()->json([
-            'success' => true,
-            'message' => 'User detail.',
-            'data' => new UserResource($user)
-        ], 200);
+        $user = User::with('tweets')->withCount('tweets')->find($id);
+        return response()->json(['user'=>$user]);
     }
 
     public function store(Request $request)
@@ -45,7 +33,7 @@ class UsersController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'User created successfully.',
-            'data' => new UserResource($user)
+            'data' => $user
         ], 200);
     }
 
@@ -63,6 +51,7 @@ class UsersController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'User not found.'
+
             ], 404);
         }
 
@@ -71,7 +60,7 @@ class UsersController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'User updated successfully.',
-            'data' => new UserResource($user)
+            'data' =>  $user
         ], 200);
     }
 
