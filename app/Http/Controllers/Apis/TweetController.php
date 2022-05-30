@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Apis;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\TweetResource;
 use App\Models\Tweet;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -46,7 +47,18 @@ class TweetController extends Controller
      */
     public function store(Request $request)
     {
+        $request->validate([
+            'content' => 'required|string'
+        ]);
 
+        $user = auth()->user();
+
+        $tweet = Tweet::create([
+            'content' => $request->content,
+            'user_id' => $user->id
+        ]);
+
+        return response()->json(['status' => 'ok', 'data' => ['tweet' => $tweet]]);
     }
 
     /**
@@ -57,7 +69,10 @@ class TweetController extends Controller
      */
     public function show($id)
     {
-
+        $tweet = Tweet::with('user')
+            ->withCount('user')
+            ->find($id);
+        return response()->json(['tweet'=>$tweet]);
 
     }
 
@@ -79,10 +94,19 @@ class TweetController extends Controller
      * @param  \App\Models\Tweet  $tweet
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Tweet $tweet)
+
+        public function update(Request $request, Tweet $tweet)
     {
-        //
+        $request->validate([
+            'content' => 'required|string'
+        ]);
+        $tweet->update([
+            'content' => $request->content,
+        ]);
+
+        return response()->json(['status' => 'ok', 'data' => ['tweet' => $tweet]]);
     }
+
 
     /**
      * Remove the specified resource from storage.
